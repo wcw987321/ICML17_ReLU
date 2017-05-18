@@ -5,7 +5,9 @@ import matplotlib.pylab as plt
 
 d = 4 # the number of dimensions
 n_node = 3 # the number of hidden nodes in the network
-nIter = 10000 # the number of iterations during gradient descent
+nIter = 100000 # the number of iterations during gradient descent
+eta = 0.001 # learning rate
+eps = 0.001
 PI = 3.1415927
 
 def compute_err(errs, ws_tmp):
@@ -45,21 +47,19 @@ def g(a, b):
 ########################## begin of main part ##################################3
 
 ws_star = np.random.randn(d, n_node) # parameters of the "real" network
-print 'ws_star: ', ws_star
+#print 'ws_star: ', ws_star
 
 #ws_star[:n_node,:n_node] = np.eye(n_node)
 ws_star_norm = np.linalg.norm(ws_star, axis=0) # norms of vectors(each vector is a parameter of a node in "real" network)
-print 'ws_star_norm: ', ws_star_norm
+#print 'ws_star_norm: ', ws_star_norm
 
 #ratio = 0.5 # how far will the init point be from the "real" parameter
 #ws0 = np.copy(ws_star) + np.random.randn(d, n_node) * ratio # init point
-ws0 = np.random.randn(d, n_node)
-print 'ws0: ', ws0
+ws0 = - np.copy(ws_star) + np.random.randn(d, n_node)
+#print 'ws0: ', ws0
 
 ws = np.copy(ws0) # init point
 ws_all = np.zeros((d, n_node, nIter)) # records of gd
-
-eta = 0.01 # learning rate
 
 for t in range(nIter):
     ws_all[:,:,t] = ws # store in the record
@@ -82,8 +82,16 @@ for t in range(nIter):
 #print 'errs: ', errs
 #plt.plot(errs_per_w.T)
 #plt.show()
-plt.plot(errs)
-plt.show()
-print(errs[0]) # the maximum loss
-print(errs[-1]) # the minimum loss
+#plt.plot(errs)
+#plt.show()
+print(errs[0], errs[-1]) # the maximum loss and minimum loss
+if errs[-1] >= eps:
+    print 'ws_star: ', ws_star
+    print 'ws_star_norm: ', ws_star_norm
+    print 'ws0: ', ws0
+    print 'ws_last: ', ws_all[:,:,nIter-1]
+    print 'eta: ', eta
+    print 'grad: ', grad
+    print '*********************************************************************8'
+#print(errs[-1]) # the minimum loss
 
